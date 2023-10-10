@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yizhi.student.dao.StudentInfoDao">
+
+    <!--
+        //根据id查询学生信息的方法
+        StudentInfoDO get(Integer id);
+    -->
+    <select id="get" resultType="com.yizhi.student.domain.StudentInfoDO">
+        select * from s_student_info where id = #{id}
+    </select>
+
+    <!--
+        //查询学生信息的总行数的方法
+        int count(Map<String,Object> map);    
+    -->
+    <select id="count" resultType="integer">
+        select count(*) from s_student_info
+        <where>
+            <if test="studentName != null and studentName != ''">
+                and student_Name like ('%',#{studentName},'%')
+            </if>
+            <if test="toCollege != null and toCollege != ''">
+                and toCollege = #{toCollege}
+            </if>
+            <if test="tomajor != null and tomajor != ''">
+                and tomajor = #{tomajor}
+            </if>
+            <if test="classId != null and classId != ''">
+                and class_id = #{classId}
+            </if>
+        </where>
+    </select>
+
+    <!--
+        //分页查询学生信息的方法
+        List<StudentInfoDO> list(Map<String,Object> map);
+    -->
+    <select id="list" resultType="com.yizhi.student.domain.StudentInfoDO">
+        select * from s_student_info
+        <where>
+            <if test="name != null and name != ''">
+                and student_Name like concat('%',#{name},'%')
+            </if>
+            <if test="toCollege != null and toCollege != ''">
+                and toCollege = #{toCollege}
+            </if>
+            <if test="tomajorId != null and tomajorId != ''">
+                and tomajor = #{tomajorId}
+            </if>
+            <if test="classId != null and classId != ''">
+                and class_id = #{classId}
+            </if>
+        </where>
+        limit #{cp},#{ps}
+</select>
+
+    <!--
+        //添加学生信息的方法
+        int save(StudentInfoDO studentInfo);
+    -->
+    <insert id="save">
+        insert into s_student_info values(
+        null,#{studentId},#{examId},#{classId},#{studentName},#{certify},
+        #{mailAddress},#{foreignLanaguage},#{studentSex},#{nation},#{political},
+        #{cardId},#{telephone},#{subjectType},#{tocollege},null,#{tomajor},#{birthplace},
+        #{grade},0,#{birthday},#{note},now(),1,null,null
+        )
+    </insert>
+
+    <!--
+        //修改学生信息的方法
+        int update(StudentInfoDO studentInfo);
+    -->
+    <update id="update">
+        update s_student_info
+        set
+        student_id = #{studentId},exam_id = #{examId},class_id = #{classId},student_name = #{studentName},
+        certify = #{certify},mail_address = #{mailAddress},foreign_lanaguage = #{foreignLanaguage},student_sex = #{studentSex},
+        nation = #{nation},political = #{political},card_id = #{cardId},telephone = #{telephone},subject_type = #{subjectType},
+        tocollege = #{tocollege},tomajor = #{tomajor},birthplace = #{birthplace},grade = #{grade},isstate = #{isstate},
+        birthday = #{birthday},note = #{note},edit_time = now(),edit_userid = #{editUserid}
+        where id = #{id}
+    </update>
+
+    <!--
+        //根据学生id删除学生信息的方法
+        int remove(Integer id);
+    -->
+    <delete id="remove">
+        delete from s_student_info where id = #{id}
+    </delete>
+
+    <!--
+        //根据学生ids批量删除学生信息的方法
+        int batchRemove(Integer[] ids);
+    -->
+    <delete id="batchRemove">
+        delete from s_student_info where id in
+        <foreach collection="array" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
